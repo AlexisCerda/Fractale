@@ -14,7 +14,7 @@
 <VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="figure.Controler.Vue">
     <SplitPane dividerPositions="0.25000000000000006" focusTraversable="true"
                VBox.vgrow="ALWAYS">
-        <AnchorPane fx:id="PaneButton" minWidth="200.0" prefHeight="591.0" prefWidth="217.0">
+        <AnchorPane fx:id="PaneButton" minWidth="200.0" prefHeight="591.0" prefWidth="217.0" maxWidth="300.0">
             <Button fx:id="plus" layoutX="111.0" layoutY="93.0" mnemonicParsing="false" text="+"/>
             <Button fx:id="moins" layoutX="61.0" layoutY="93.0" mnemonicParsing="false" text="-"/>
             <Label fx:id="Nbr_iteration" contentDisplay="CENTER" layoutX="88.0" layoutY="94.0" prefHeight="23.0"
@@ -27,6 +27,7 @@
             </MenuButton>
             <Button fx:id="actualiser" layoutX="67.0" layoutY="127.0" mnemonicParsing="false" text="Actualiser"/>
             <Label layoutX="21.0" layoutY="287.0" text="Nombre d'entités : " fx:id="Nbr_Entite"/>
+            <Button fx:id="btnExit" layoutY="400.0" layoutX="67.0" text="Quitter" />
         </AnchorPane>
         <ScrollPane>
             <AnchorPane id="Content" fx:id="view_fractal" prefHeight="589.0"

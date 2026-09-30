@@ -2,10 +2,12 @@ package figure.Controler;
 
 import figure.Fractales.*;
 import figure.Modele;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 
 public class Vue {
     @FXML
@@ -29,14 +31,24 @@ public class Vue {
 
     public TextField tfAngle;
     public Button btnAngle;
+    public TextField tfAccurate;
+    public Label Accurate;
+    public boolean isMathFunction;
+
+    @FXML
+    public Button btnExit;
+
 
     @FXML
     private void initialize() {
+        isMathFunction = false;
         Modele mo = Modele.getInstance();
         nbr_taille.setText("10");
         view_fractal.setStyle("-fx-background-color: #f0f0f0;");
         Nbr_iteration.setText(mo.getIteration()+"");
         tfAngle = new TextField();
+        tfAccurate = new TextField();
+        Accurate = new Label("Précision du fractale");
 
         btnAngle = new Button();
         btnAngle.setText("Angle");
@@ -57,6 +69,15 @@ public class Vue {
         tfAngle.setLayoutY(330.0);
         btnAngle.setLayoutX(154.0);
         btnAngle.setLayoutY(330.0);
+
+        tfAccurate.setLayoutX(54.0);
+        tfAccurate.setLayoutY(330.0);
+        Accurate.setLayoutX(54.0);
+        Accurate.setLayoutY(310.0);
+
+        btnExit.setOnAction(e -> {
+            Platform.exit();
+        });
 
         moins.setOnAction(event -> {
             Modele modele = Modele.getInstance();
@@ -97,20 +118,19 @@ public class Vue {
         });
 
         MenuItem menger = new MenuItem("Sierpiński carpet");
-        MenuItem triangle = new MenuItem("Triangle Sierpinski");
         MenuItem pytha = new MenuItem("Pythagoras tree");
         MenuItem dragon = new MenuItem("Dragon curve");
         MenuItem koch = new MenuItem("Koch snowflake");
+        MenuItem mandelbrot = new MenuItem("Mandelbrot set");
 
         menger.setOnAction(e -> {
+            isMathFunction = false;
             this.setActionItemMenu(new Menger(),menger.getText());
         });
 
-        triangle.setOnAction(e -> {
-            this.setActionItemVoid(triangle.getText());
-        });
 
         pytha.setOnAction(e -> {
+            isMathFunction = false;
             mo.setAngle(45);
             this.setActionItemMenu(new Pytha(),pytha.getText());
             if (!PaneButton.getChildren().contains(tfAngle)) {
@@ -122,10 +142,12 @@ public class Vue {
         });
 
         dragon.setOnAction(e -> {
+            isMathFunction = false;
             this.setActionItemMenu(new Dragon(),dragon.getText());
         });
 
         koch.setOnAction(e -> {
+            isMathFunction = false;
             mo.setAngle(60);
             this.setActionItemMenu(new Flocon(),koch.getText());
             if (!PaneButton.getChildren().contains(tfAngle)) {
@@ -135,7 +157,18 @@ public class Vue {
                 PaneButton.getChildren().add(btnAngle);
             }
         });
-        Menu_fractale.getItems().addAll( menger, koch,dragon,triangle, pytha);
+        mandelbrot.setOnAction(e -> {
+            isMathFunction = true;
+            mo.setPrecision(200);
+            this.setActionItemMenu(new Mandelbrot(),mandelbrot.getText());
+            if (!PaneButton.getChildren().contains(tfAccurate)) {
+                PaneButton.getChildren().add(tfAccurate);
+            }
+            if (!PaneButton.getChildren().contains(Accurate)) {
+                PaneButton.getChildren().add(Accurate);
+            }
+        });
+        Menu_fractale.getItems().addAll( menger, koch,dragon, pytha, mandelbrot);
     }
 
     private void ActionButtonActualiser(Modele modele) {
@@ -148,6 +181,9 @@ public class Vue {
         }catch (NumberFormatException e) {
             nbr2 = 10;
         }
+        if (!tfAccurate.getText().isEmpty()){
+            modele.setPrecision(Integer.parseInt(tfAccurate.getText().trim()));
+        }
         modele.setTaille(nbr2);
 
         modele.getRoot().getChildren().clear();
@@ -159,11 +195,8 @@ public class Vue {
         nbr_taille.setText(Nbr+"");
     }
 
-    public void addRoot(Node node) {
-        view_fractal.getChildren().add(node);
-    }
-
     public void setRoot(Node node) {
+        view_fractal.getChildren().clear();
         view_fractal.getChildren().add(node);
     }
 
@@ -182,31 +215,51 @@ public class Vue {
         return Menu_fractale;
     }
 
-    public void setMenu_fractale(MenuButton menu_fractale) {
-        Menu_fractale = menu_fractale;
-    }
-
     public void setActionItemMenu(Fractale fractale, String nom) {
         Modele m = Modele.getInstance();
+
         m.getRoot().getChildren().clear();
         m.setIteration(1);
         m.setTaille(10);
         m.setFractale(fractale);
         m.getFractale().build(m.getRoot());
         Menu_fractale.setText(nom);
+
+        if (isMathFunction){
+            if (PaneButton.getChildren().contains(plus)) {
+                PaneButton.getChildren().remove(plus);
+            }
+            if (PaneButton.getChildren().contains(moins)){
+                PaneButton.getChildren().remove(moins);
+            }
+            if (PaneButton.getChildren().contains(Nbr_iteration)){
+                PaneButton.getChildren().remove(Nbr_iteration);
+            }
+        }
+        else {
+            if (!PaneButton.getChildren().contains(plus)) {
+                PaneButton.getChildren().add(plus);
+            }
+            if (!PaneButton.getChildren().contains(moins)){
+                PaneButton.getChildren().add(moins);
+            }
+            if (!PaneButton.getChildren().contains(Nbr_iteration)){
+                PaneButton.getChildren().add(Nbr_iteration);
+            }
+        }
+
         if (PaneButton.getChildren().contains(tfAngle)) {
             PaneButton.getChildren().remove(tfAngle);
         }
         if (PaneButton.getChildren().contains(btnAngle)) {
             PaneButton.getChildren().remove(btnAngle);
         }
-    }
-
-    public void setActionItemVoid(String nom) {
-        Modele m = Modele.getInstance();
-        m.getRoot().getChildren().clear();
-        m.getRoot().getChildren().add(new Label("Indisponible pour le moment"));
-        Menu_fractale.setText(nom);
+        if (PaneButton.getChildren().contains(tfAccurate)) {
+            PaneButton.getChildren().remove(tfAccurate);
+        }
+        if (PaneButton.getChildren().contains(Accurate)) {
+            PaneButton.getChildren().remove(Accurate);
+        }
     }
 
     public void setNbr_Entite(int Nbr) {

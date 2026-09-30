@@ -20,6 +20,7 @@ public class Modele extends Application {
     private Pane root = new Pane();
     private final Label nbr_ite = new Label(Iteration+"");
     private int angle;
+    private int precision;
 
     private Stage stage;
     private Vue vue;
@@ -28,6 +29,7 @@ public class Modele extends Application {
         this.fractale = new Menger();
         this.Taille = 1000;
         this.angle = 60;
+        this.precision = 100;
     }
 
     @Override
@@ -40,9 +42,7 @@ public class Modele extends Application {
         stage.setTitle("Fractal Land");
         stage.setScene(new Scene(nouveau, 1200, 900));
         stage.show();
-        this.root = this.fractale.build(this.root);
-        vue.setRoot(this.root);
-
+        this.build();
     }
 
     public synchronized static Modele getInstance(){
@@ -95,5 +95,16 @@ public class Modele extends Application {
     }
     public int getAngle() {
         return angle;
+    }
+    public void setPrecision(int precision) {
+        this.precision = precision;
+        vue.tfAccurate.setText(precision+"");
+    }
+    public int getPrecision() {
+        return precision;
+    }
+    public void build() {
+        this.root = this.fractale.build(this.root);
+        vue.setRoot(this.root);
     }
 }

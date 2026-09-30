@@ -41,6 +41,7 @@ public class Flocon implements Fractale {
     @Override
     public Pane build(Pane p) {
         compteur = 0;
+        coor.clear();
         Modele m = Modele.getInstance();
         int iteration = m.getIteration();
         curve(p, iteration);
